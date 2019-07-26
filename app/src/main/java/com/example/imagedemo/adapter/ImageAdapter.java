@@ -107,6 +107,11 @@ public class ImageAdapter extends RecyclerView.Adapter {
         return imageItems.size();
     }
 
+    public void notifyView(List<ImageItem> chooseList) {
+        this.chooseList = chooseList;
+        notifyDataSetChanged();
+    }
+
     private class adapterHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
         private View view;

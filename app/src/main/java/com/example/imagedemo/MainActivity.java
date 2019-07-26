@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private int choose = 0; // 选择的相册 0为所有图片
     private TextView textViewFolder;
     private View drakeView; // 蒙版
+    private int position;
     String[] permissions = new String[]{ // 需要的权限
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (data != null) {
             chooseList = (List<ImageItem>) data.getSerializableExtra("chooseList");
-            initImageRecyclerView();
+            imageAdapter.notifyView(chooseList);
             initFinish();
         }
     }
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         textViewFolder.setText(imageFolders.get(choose).getName());
 
         initFolderRecycleView();
+        position = 0;
         initImageRecyclerView();
 
         initFinish();
@@ -138,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
             public void onStart(int position, List<ImageItem> imageItems, List<ImageItem> chooseList) {
                 Intent intent = new Intent(MainActivity.this, ImageActivity.class);
                 intent.putExtra("position", position);
+                intent.putExtra("mode", 0);
                 intent.putExtra("imageItems", (Serializable) imageItems);
                 intent.putExtra("chooseList", (Serializable) chooseList);
                 startActivityForResult(intent, 1);
@@ -293,6 +296,7 @@ public class MainActivity extends AppCompatActivity {
         if (chooseList.size() > 0) {
             Intent intent = new Intent(this, ImageActivity.class);
             intent.putExtra("position", 0);
+            intent.putExtra("mode", 1);
             intent.putExtra("imageItems", (Serializable) chooseList);
             intent.putExtra("chooseList", (Serializable) chooseList);
             startActivityForResult(intent, 1);

@@ -14,6 +14,17 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <View
+        android:id="@+id/item_image_select_cancel_select"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#80FFFFFF"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/item_image_select_image"
+        app:layout_constraintEnd_toEndOf="@id/item_image_select_image"
+        app:layout_constraintTop_toTopOf="@id/item_image_select_image"
+        app:layout_constraintBottom_toBottomOf="@id/item_image_select_image"/>
+
+    <View
         android:id="@+id/item_image_select_select"
         android:layout_width="0dp"
         android:layout_height="0dp"

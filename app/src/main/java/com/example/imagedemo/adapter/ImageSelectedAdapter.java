@@ -19,14 +19,19 @@ import java.util.List;
 
 public class ImageSelectedAdapter extends RecyclerView.Adapter {
     private Context context;
+    private int mode; // 0 表示点击图片后进图片所在文件夹预览 1 表示预览以选择的图片
     private List<ImageItem> imageItems;
+    private List<ImageItem> chooseList;
     private List<Integer> positions;
     private int position;
     private OnSelectClickListener onSelectClickListener;
 
-    public ImageSelectedAdapter(Context context, List<ImageItem> imageItems, int position, List<Integer> positions, OnSelectClickListener onSelectClickListener) {
+
+    public ImageSelectedAdapter(Context context, int mode, List<ImageItem> imageItems, List<ImageItem> chooseList, int position, List<Integer> positions, OnSelectClickListener onSelectClickListener) {
         this.context = context;
+        this.mode = mode;
         this.imageItems = imageItems;
+        this.chooseList = chooseList;
         this.position = position;
         this.positions = positions;
         this.onSelectClickListener = onSelectClickListener;
@@ -41,46 +46,83 @@ public class ImageSelectedAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int i) {
-        String path = imageItems.get(i).getPath();
         ImageView imageView = ((AdapterHolder) holder).imageView;
+        View boxView = ((AdapterHolder) holder).boxView; // 表示选择的绿色选择框视图
+        View selectView = ((AdapterHolder) holder).selectView; // 表示取消选择的白色蒙版
+
+        ImageItem imageItem = imageItems.get(i);
+        if (mode == 0) {
+            imageItem = chooseList.get(i);
+        }
+        String path  = imageItem.getPath();
         File file = new File(path);
         RequestOptions options = new RequestOptions().centerCrop();
         Glide.with(context).load(file).apply(options).into(imageView);
 
-        View view = ((AdapterHolder) holder).view;
-        if (position == positions.get(i)) {
-            view.setVisibility(View.VISIBLE);
+        if (mode == 0) {
+            if (position == positions.get(i)) {
+                boxView.setVisibility(View.VISIBLE);
+            } else {
+                boxView.setVisibility(View.GONE);
+            }
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (positions.get(i) != -1) {
+                        position = positions.get(i);
+                    }
+                    notifyDataSetChanged();
+                    onSelectClickListener.onClick(position);
+                }
+            });
         }
         else {
-            view.setVisibility(View.GONE);
-        }
-
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (positions.get(i) != -1) {
-                    position = positions.get(i);
-                }
-                notifyDataSetChanged();
-                onSelectClickListener.onClick(position);
+            if (position == i) {
+                boxView.setVisibility(View.VISIBLE);
             }
-        });
+            else {
+                boxView.setVisibility(View.GONE);
+            }
 
+            if (!chooseList.contains(imageItems.get(i))) {
+                selectView.setVisibility(View.VISIBLE);
+            }
+            else {
+                selectView.setVisibility(View.GONE);
+            }
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    position = i;
+                    notifyDataSetChanged();
+                    onSelectClickListener.onClick(position);
+                }
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
-        return imageItems.size();
+        if (mode == 0) {
+            return chooseList.size();
+        }
+        else {
+            return imageItems.size();
+        }
     }
 
     public class AdapterHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
-        private View view;
+        private View boxView;
+        private View selectView;
 
         public AdapterHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.item_image_select_image);
-            view = itemView.findViewById(R.id.item_image_select_select);
+            boxView = itemView.findViewById(R.id.item_image_select_select);
+            selectView = itemView.findViewById(R.id.item_image_select_cancel_select);
         }
     }
 

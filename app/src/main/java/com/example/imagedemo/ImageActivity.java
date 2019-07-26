@@ -10,6 +10,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -38,12 +39,14 @@ public class ImageActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private TextView textViewNo;
     private int position;
+    private int mode;
     private List<ImageItem> imageItems;
     private List<ImageItem> chooseList;
     private boolean full = false;
     private List<Integer> choose = new ArrayList<>();
     private List<ImageItem> chooseImageItems = new ArrayList<>();
     private RecyclerView recyclerView;
+    private LinearLayoutManager layoutManager;
     private ImageSelectedAdapter selectedAdapter;
     private int index; // selectView 显示下标
 
@@ -86,6 +89,7 @@ public class ImageActivity extends AppCompatActivity {
         textViewNo = findViewById(R.id.image_no);
 
         position = getIntent().getIntExtra("position", 0);
+        mode = getIntent().getIntExtra("mode", 0);
         imageItems = (List<ImageItem>) getIntent().getSerializableExtra("imageItems");
         chooseList = (List<ImageItem>) getIntent().getSerializableExtra("chooseList");
 
@@ -178,10 +182,10 @@ public class ImageActivity extends AppCompatActivity {
 
     public void initSelectView() {
         recyclerView = findViewById(R.id.image_selected_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager = new CenterLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
-        selectedAdapter = new ImageSelectedAdapter(this, chooseList, position, choose, new ImageSelectedAdapter.OnSelectClickListener() {
+        selectedAdapter = new ImageSelectedAdapter(this, mode, imageItems, chooseList, position, choose, new ImageSelectedAdapter.OnSelectClickListener() {
             @Override
             public void onClick(int choose) {
                 position = choose;
@@ -294,7 +298,7 @@ public class ImageActivity extends AppCompatActivity {
         if (choose.indexOf(position) != -1) {
             index = choose.indexOf(position);
         }
-        recyclerView.getLayoutManager().scrollToPosition(index);
+        layoutManager.scrollToPosition(index);
         if (full) {
             recyclerView.setVisibility(View.GONE);
         }

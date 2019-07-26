@@ -24,9 +24,9 @@
 
     <ImageView
         android:id="@+id/item_image_select"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_margin="5dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:padding="5dp"
         android:clickable="true"
         android:src="@mipmap/box_no_select_white"
         app:layout_constraintEnd_toEndOf="@id/item_image_image"
