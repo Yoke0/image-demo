@@ -113,7 +113,17 @@ public class ImageActivity extends AppCompatActivity {
     public void initViewPager() {
         viewPager = findViewById(R.id.view_paper_image);
 
-        ImagePagerAdapter imagePagerAdapter = new ImagePagerAdapter(this, imageItems);
+        ImagePagerAdapter imagePagerAdapter = new ImagePagerAdapter(this, imageItems, new ImagePagerAdapter.OnPhotoViewListener() {
+            @Override
+            public void onClick() {
+                if (full) {
+                    displayFull(false);
+                }
+                else {
+                    displayFull(true);
+                }
+            }
+        });
         viewPager.setAdapter(imagePagerAdapter);
         viewPager.setCurrentItem(position); //设置初始页面为点击的图片
 
@@ -136,46 +146,6 @@ public class ImageActivity extends AppCompatActivity {
             @Override
             public void onPageScrollStateChanged(int state) {
 
-            }
-        });
-
-        viewPager.setOnTouchListener(new ViewPager.OnTouchListener() {
-            int flag = 0;
-            float x = 0;
-            float y = 0;
-
-            ViewConfiguration configuration = ViewConfiguration.get(getBaseContext());
-            float mTouchSlop = ViewConfigurationCompat.getScaledPagingTouchSlop(configuration);
-
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()){
-                    case MotionEvent.ACTION_DOWN:
-                        flag = 0;
-                        x = motionEvent.getX();
-                        y = motionEvent.getY();
-                        break ;
-                    case MotionEvent.ACTION_MOVE:
-                        float xDiff = Math.abs(motionEvent.getX() - x);
-                        float yDiff = Math.abs(motionEvent.getY() - y);
-                        if (xDiff < mTouchSlop && xDiff >= yDiff)
-                            flag = 0;
-                        else
-                            flag = -1;
-                        break;
-                    case  MotionEvent.ACTION_UP :
-                        if (flag == 0) {
-                            if (full) {
-                                displayFull(false);
-                            }
-                            else {
-                                displayFull(true);
-                            }
-                        }
-                        break ;
-                }
-
-                return false;
             }
         });
     }
@@ -298,7 +268,7 @@ public class ImageActivity extends AppCompatActivity {
         if (choose.indexOf(position) != -1) {
             index = choose.indexOf(position);
         }
-        layoutManager.scrollToPosition(index);
+        layoutManager.scrollToPosition(index - 1);
         if (full) {
             recyclerView.setVisibility(View.GONE);
         }
