@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -24,6 +27,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.imagedemo.adapter.FolderAdapter;
 import com.example.imagedemo.adapter.ImageAdapter;
@@ -47,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private int choose = 0; // 选择的相册 0为所有图片
     private TextView textViewFolder;
     private View drakeView; // 蒙版
-    private int position;
+    private long exitTime = 0;
     String[] permissions = new String[]{ // 需要的权限
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -88,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
         textViewFolder.setText(imageFolders.get(choose).getName());
 
         initFolderRecycleView();
-        position = 0;
         initImageRecyclerView();
 
         initFinish();
@@ -301,5 +304,20 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("chooseList", (Serializable) chooseList);
             startActivityForResult(intent, 1);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode== KeyEvent.KEYCODE_BACK){
+            if (System.currentTimeMillis() - exitTime > 2000) {
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            }
+            else {
+                finish();
+            }
+        }
+
+        return true;
     }
 }
