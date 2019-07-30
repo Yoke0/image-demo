@@ -12,3 +12,6 @@
 ### 1.添加PhotoView框架
 ### 2.修改预览图片实现全屏的触发事件
 原本为单击ViewPager触发，现在更改为点击PhotoView
+
+## version2.1
+优化预览界面中的recycleview的刷新和显示
