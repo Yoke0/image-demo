@@ -113,6 +113,11 @@ public class ImageSelectedAdapter extends RecyclerView.Adapter {
         }
     }
 
+    public void notifySelect(int position) {
+        this.position = position;
+        notifyDataSetChanged();
+    }
+
     public class AdapterHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
         private View boxView;

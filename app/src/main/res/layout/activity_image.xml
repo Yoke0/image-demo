@@ -74,8 +74,10 @@
         <TextView
             android:id="@+id/textView_folder"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_height="match_parent"
+            android:onClick="onClip"
+            android:gravity="center"
+            android:padding="10dp"
             android:text="编辑"
             android:textColor="#FFFFFF"
             android:textSize="15sp" />

@@ -264,11 +264,14 @@ public class ImageActivity extends AppCompatActivity {
         }
 
         initFinish();
-        initSelectView();
+
+        selectedAdapter.notifySelect(position);
         if (choose.indexOf(position) != -1) {
             index = choose.indexOf(position);
+            layoutManager.scrollToPosition(index);
+            layoutManager.setStackFromEnd(true);
         }
-        layoutManager.scrollToPosition(index - 1);
+
         if (full) {
             recyclerView.setVisibility(View.GONE);
         }
@@ -316,5 +319,9 @@ public class ImageActivity extends AppCompatActivity {
         intent.putExtra("chooseList", (Serializable) chooseList);
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    public void onClip(View view) {
+        Toast.makeText(this, "待开发", Toast.LENGTH_SHORT).show();
     }
 }
